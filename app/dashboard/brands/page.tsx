@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast"
 import { useBrands } from "@/hooks/use-brands"
 import BrandsService from "@/lib/brands-service"
-import { ChevronLeft, ChevronRight, Edit2 } from "lucide-react"
+import { ChevronLeft, ChevronRight, Edit2, Trash2 } from "lucide-react" // <- Importar Trash2
 
 export default function BrandsPage() {
   const { brands, isLoading, error, refetch, currentPage, hasNextPage, hasPreviousPage, goToPage, totalCount } =
@@ -100,7 +100,8 @@ export default function BrandsPage() {
         </div>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-slate-900 hover:bg-slate-800 text-white">Crear Marca</Button>
+            {/* --- BOTÓN MODIFICADO --- */}
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white">Crear Marca</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -116,7 +117,8 @@ export default function BrandsPage() {
                   required
                 />
               </div>
-              <Button type="submit" disabled={isSubmitting} className="w-full bg-slate-900 hover:bg-slate-800">
+              {/* --- BOTÓN MODIFICADO --- */}
+              <Button type="submit" disabled={isSubmitting} className="w-full bg-blue-600 hover:bg-blue-700">
                 {isSubmitting ? "Creando..." : "Crear"}
               </Button>
             </form>
@@ -155,14 +157,24 @@ export default function BrandsPage() {
                   {brands.map((brand) => (
                     <tr key={brand.id} className="border-b hover:bg-slate-50">
                       <td className="px-6 py-3 font-medium">{brand.name}</td>
+                      {/* --- ACCIONES MODIFICADAS --- */}
                       <td className="px-6 py-3">
-                        <div className="flex gap-2">
-                          <Button size="sm" variant="outline" onClick={() => handleEditClick(brand)} className="gap-1">
+                        <div className="flex gap-1">
+                          <Button
+                            size="icon-sm"
+                            variant="ghost"
+                            onClick={() => handleEditClick(brand)}
+                            className="text-slate-600 hover:bg-slate-200 hover:text-slate-900"
+                          >
                             <Edit2 className="w-4 h-4" />
-                            Editar
                           </Button>
-                          <Button variant="destructive" size="sm" onClick={() => handleDelete(brand.id)}>
-                            Eliminar
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={() => handleDelete(brand.id)}
+                            className="text-red-600 hover:bg-red-100 hover:text-red-700"
+                          >
+                            <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
                       </td>
@@ -217,7 +229,8 @@ export default function BrandsPage() {
               />
             </div>
             <div className="flex gap-2">
-              <Button type="submit" disabled={isSubmitting} className="flex-1 bg-slate-900 hover:bg-slate-800">
+              {/* --- BOTÓN MODIFICADO --- */}
+              <Button type="submit" disabled={isSubmitting} className="flex-1 bg-blue-600 hover:bg-blue-700">
                 {isSubmitting ? "Actualizando..." : "Actualizar"}
               </Button>
               <Button

@@ -2,13 +2,13 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Card } from "@/components/ui/card"
+// Se elimina Card
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { MessageCircle, Send, Loader2, Mic } from "lucide-react" // <--- Importa Mic
+import { Send, Loader2, Mic } from "lucide-react" // Se elimina MessageCircle
 import { generateDynamicReport } from "./actions"
-import { useSpeechRecognition } from "@/hooks/use-speech-recognition" // <--- Importa el hook
-import { cn } from "@/lib/utils" // <--- Importa cn (classnames)
+import { useSpeechRecognition } from "@/hooks/use-speech-recognition"
+import { cn } from "@/lib/utils"
 
 interface Message {
   id: string
@@ -31,7 +31,6 @@ export function AIReportChat() {
   const [loading, setLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  // --- Lógica de Reconocimiento de Voz ---
   const { 
     transcript, 
     isListening, 
@@ -40,13 +39,11 @@ export function AIReportChat() {
     stopListening 
   } = useSpeechRecognition()
 
-  // Actualiza el input con la transcripción
   useEffect(() => {
     if (transcript) {
       setInputValue(transcript)
     }
   }, [transcript])
-  // --- Fin Lógica de Voz ---
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -98,14 +95,10 @@ export function AIReportChat() {
   }
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-purple-50 to-slate-50 border border-purple-200 flex flex-col h-[500px]">
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-          <MessageCircle className="w-5 h-5 text-purple-600" />
-          Generador de Reportes con IA
-        </h3>
-        <p className="text-sm text-slate-600 mt-1">Describe en lenguaje natural el reporte que necesitas</p>
-      </div>
+    // Se elimina la Card y se reemplaza por un div flexible
+    <div className="flex flex-col h-full p-6">
+      
+      {/* Se eliminó el Título y Descripción */}
 
       {/* Messages Container */}
       <div className="flex-1 overflow-y-auto mb-4 space-y-3 bg-white rounded-lg p-4 border border-slate-200">
@@ -140,42 +133,38 @@ export function AIReportChat() {
           onChange={(e) => setInputValue(e.target.value)}
           onKeyPress={(e) => e.key === "Enter" && !loading && !isListening && handleSendMessage()}
           placeholder="Describe el reporte que necesitas..."
-          disabled={loading || isListening} // Deshabilita el input mientras escucha
+          disabled={loading || isListening}
           className="flex-1"
         />
         
-        {/* Botón de Micrófono */}
         <Button
           type="button"
           onClick={() => (isListening ? stopListening() : startListening())}
-          disabled={loading || !isSupported} // Deshabilita si carga o no es compatible
+          disabled={loading || !isSupported}
           className={cn(
             isListening
-              ? "bg-red-600 hover:bg-red-700" // Rojo si está escuchando
-              : "bg-blue-600 hover:bg-blue-700" // Azul si no está escuchando
+              ? "bg-red-600 hover:bg-red-700"
+              : "bg-blue-600 hover:bg-blue-700"
           )}
           title={isListening ? "Detener dictado" : "Iniciar dictado"}
         >
           <Mic className="w-4 h-4" />
         </Button>
 
-        {/* Botón de Enviar */}
         <Button
           onClick={handleSendMessage}
-          disabled={loading || !inputValue.trim() || isListening} // Deshabilita si escucha
+          disabled={loading || !inputValue.trim() || isListening}
           className="bg-purple-600 hover:bg-purple-700"
         >
           <Send className="w-4 h-4" />
         </Button>
       </div>
       
-      {/* Mensaje de compatibilidad */}
       {!isSupported && (
         <p className="text-xs text-slate-500 mt-2 text-center">
           El dictado por voz no es compatible con este navegador.
         </p>
       )}
-      {/* --- FIN DE SECCIÓN MODIFICADA --- */}
-    </Card>
+    </div>
   )
 }

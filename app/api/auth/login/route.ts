@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     console.log("[v0] Proxy: Forwarding login to backend:", body.email)
 
     // Forward request to backend
-    const backendResponse = await fetch("https://smartsales365-backend.onrender.com/api/v1/users/login/", {
+    const backendResponse = await fetch("https://backend-smartsales365.onrender.com/api/v1/users/login/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

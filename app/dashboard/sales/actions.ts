@@ -3,7 +3,7 @@
 import AuthService from "@/lib/auth-service"
 
 // Define la URL base de tu backend
-const API_BASE_URL = "https://smartsales365-backend.onrender.com"
+const API_BASE_URL = "https://backend-smartsales365.onrender.com"
 
 interface FetchSalesParams {
   page?: number

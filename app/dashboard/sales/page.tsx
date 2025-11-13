@@ -3,12 +3,10 @@
 import { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, ChevronLeft, ChevronRight, Eye, X } from "lucide-react"
+// Se eliminaron imports de Input, Select, Search
+import { ChevronLeft, ChevronRight, Eye, X } from "lucide-react"
 import { fetchSalesData } from "./actions"
-import { ReportGenerator } from "./report-generator"
-import { AIReportChat } from "./ai-report-chat"
+// Se eliminaron ReportGenerator y AIReportChat
 
 interface SaleDetail {
   product: {
@@ -63,35 +61,16 @@ export default function SalesPage() {
   const [error, setError] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
-
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null)
 
-  const [clientSearch, setClientSearch] = useState("")
-  const [productSearch, setProductSearch] = useState("")
-  const [fechaInicio, setFechaInicio] = useState("")
-  const [fechaFin, setFechaFin] = useState("")
-  const [montoMin, setMontoMin] = useState("")
-  const [montoMax, setMontoMax] = useState("")
-  const [status, setStatus] = useState("all")
-  const [month, setMonth] = useState("all")
-  const [year, setYear] = useState("")
+  // Se eliminaron todos los useState de filtros
 
   const loadSales = async (page = 1) => {
     setLoading(true)
     setError(null)
     try {
-      const result = await fetchSalesData({
-        page,
-        client_search: clientSearch,
-        product_search: productSearch,
-        fecha_inicio: fechaInicio,
-        fecha_fin: fechaFin,
-        monto_min: montoMin,
-        monto_max: montoMax,
-        status,
-        month,
-        year,
-      })
+      // fetchSalesData ahora solo usa la paginación
+      const result = await fetchSalesData({ page })
 
       if (result.success && result.data) {
         setSales(result.data.results)
@@ -110,24 +89,9 @@ export default function SalesPage() {
 
   useEffect(() => {
     loadSales()
-  }, [])
+  }, []) // Dependencias eliminadas
 
-  const handleFilter = () => {
-    loadSales(1)
-  }
-
-  const handleReset = () => {
-    setClientSearch("")
-    setProductSearch("")
-    setFechaInicio("")
-    setFechaFin("")
-    setMontoMin("")
-    setMontoMax("")
-    setStatus("all")
-    setMonth("all")
-    setYear("")
-    setCurrentPage(1)
-  }
+  // Se eliminaron handleFilter y handleReset
 
   const itemsPerPage = 10
   const totalPages = Math.ceil(totalCount / itemsPerPage)
@@ -145,156 +109,7 @@ export default function SalesPage() {
         </Card>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ReportGenerator
-          clientSearch={clientSearch}
-          productSearch={productSearch}
-          fechaInicio={fechaInicio}
-          fechaFin={fechaFin}
-          montoMin={montoMin}
-          montoMax={montoMax}
-          status={status}
-          month={month}
-          year={year}
-        />
-
-        <AIReportChat />
-      </div>
-
-      {/* Filtros */}
-      <Card className="p-6">
-        <h2 className="text-lg font-semibold text-slate-900 mb-4">Filtros</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-          {/* Cliente Search */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Buscar Cliente</label>
-            <Input
-              placeholder="Nombre, apellido o email..."
-              value={clientSearch}
-              onChange={(e) => setClientSearch(e.target.value)}
-              className="w-full"
-            />
-          </div>
-
-          {/* Producto Search */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Buscar Producto</label>
-            <Input
-              placeholder="Nombre o categoría..."
-              value={productSearch}
-              onChange={(e) => setProductSearch(e.target.value)}
-              className="w-full"
-            />
-          </div>
-
-          {/* Fecha Inicio */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Fecha Inicio</label>
-            <Input
-              type="date"
-              value={fechaInicio}
-              onChange={(e) => setFechaInicio(e.target.value)}
-              className="w-full"
-            />
-          </div>
-
-          {/* Fecha Fin */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Fecha Fin</label>
-            <Input type="date" value={fechaFin} onChange={(e) => setFechaFin(e.target.value)} className="w-full" />
-          </div>
-
-          {/* Monto Mínimo */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Monto Mínimo</label>
-            <Input
-              type="number"
-              placeholder="0.00"
-              value={montoMin}
-              onChange={(e) => setMontoMin(e.target.value)}
-              step="0.01"
-              className="w-full"
-            />
-          </div>
-
-          {/* Monto Máximo */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Monto Máximo</label>
-            <Input
-              type="number"
-              placeholder="999999.99"
-              value={montoMax}
-              onChange={(e) => setMontoMax(e.target.value)}
-              step="0.01"
-              className="w-full"
-            />
-          </div>
-
-          {/* Status */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Estado</label>
-            <Select value={status} onValueChange={setStatus}>
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccionar estado..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos</SelectItem>
-                <SelectItem value="COMPLETED">Completado</SelectItem>
-                <SelectItem value="PENDING">Pendiente</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Mes */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Mes</label>
-            <Select value={month} onValueChange={setMonth}>
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccionar mes..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos</SelectItem>
-                <SelectItem value="1">Enero</SelectItem>
-                <SelectItem value="2">Febrero</SelectItem>
-                <SelectItem value="3">Marzo</SelectItem>
-                <SelectItem value="4">Abril</SelectItem>
-                <SelectItem value="5">Mayo</SelectItem>
-                <SelectItem value="6">Junio</SelectItem>
-                <SelectItem value="7">Julio</SelectItem>
-                <SelectItem value="8">Agosto</SelectItem>
-                <SelectItem value="9">Septiembre</SelectItem>
-                <SelectItem value="10">Octubre</SelectItem>
-                <SelectItem value="11">Noviembre</SelectItem>
-                <SelectItem value="12">Diciembre</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Año */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Año</label>
-            <Input
-              type="number"
-              placeholder="2025"
-              value={year}
-              onChange={(e) => setYear(e.target.value)}
-              className="w-full"
-            />
-          </div>
-        </div>
-
-        {/* Buttons */}
-        <div className="flex gap-2">
-          <Button onClick={handleFilter} disabled={loading} className="bg-blue-600 hover:bg-blue-700">
-            <Search className="w-4 h-4 mr-2" />
-            Filtrar
-          </Button>
-          <Button onClick={handleReset} variant="outline">
-            Limpiar Filtros
-          </Button>
-        </div>
-      </Card>
+      {/* SECCIÓN DE REPORTES Y FILTROS ELIMINADA */}
 
       {/* Sales Table */}
       <Card className="p-6">
@@ -302,7 +117,7 @@ export default function SalesPage() {
           {loading ? (
             <div className="text-center py-8 text-slate-600">Cargando ventas...</div>
           ) : sales.length === 0 ? (
-            <div className="text-center py-8 text-slate-600">No hay ventas registradas con estos filtros</div>
+            <div className="text-center py-8 text-slate-600">No hay ventas registradas</div>
           ) : (
             <>
               <table className="w-full">

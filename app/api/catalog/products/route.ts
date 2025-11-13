@@ -11,12 +11,18 @@ export async function GET(request: NextRequest) {
     const url = new URL(request.url)
     const params = url.searchParams.toString()
 
-    const response = await fetch(`https://smartsales365-backend.onrender.com/api/v1/catalog/products/?${params}`, {
+    // --- INICIO DE CORRECCIÓN ---
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+    }
+    if (authHeader.Authorization) {
+      headers["Authorization"] = authHeader.Authorization
+    }
+    // --- FIN DE CORRECCIÓN ---
+
+    const response = await fetch(`https://backend-smartsales365.onrender.com/api/v1/catalog/products/?${params}`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        ...authHeader,
-      },
+      headers: headers, // Usar headers corregidos
     })
 
     if (!response.ok) throw new Error("Failed to fetch products")
@@ -33,9 +39,17 @@ export async function POST(request: NextRequest) {
     const authHeader = await getAuthHeader(request)
     const body = await request.formData()
 
-    const response = await fetch("https://smartsales365-backend.onrender.com/api/v1/catalog/products/", {
+    // --- INICIO DE CORRECCIÓN ---
+    // Para FormData, no establecemos Content-Type, solo Authorization
+    const headers: HeadersInit = {}
+    if (authHeader.Authorization) {
+      headers["Authorization"] = authHeader.Authorization
+    }
+    // --- FIN DE CORRECCIÓN ---
+
+    const response = await fetch("https://backend-smartsales365.onrender.com/api/v1/catalog/products/", {
       method: "POST",
-      headers: authHeader,
+      headers: headers, // Usar headers corregidos
       body: body,
     })
 

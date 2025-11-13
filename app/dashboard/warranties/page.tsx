@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast"
 import { useWarranties } from "@/hooks/use-warranties"
 import WarrantiesService, { type Warranty } from "@/lib/warranties-service"
 import ProvidersService, { type Provider } from "@/lib/providers-service"
-import { ChevronLeft, ChevronRight, Edit2 } from "lucide-react"
+import { ChevronLeft, ChevronRight, Edit2, Trash2 } from "lucide-react" // <- Importar Trash2
 import { useEffect } from "react"
 
 export default function WarrantiesPage() {
@@ -35,8 +35,18 @@ export default function WarrantiesPage() {
   useEffect(() => {
     const fetchProviders = async () => {
       try {
-        const data = await ProvidersService.getProviders()
-        setProviders(data.results) // extract results array from ProvidersResponse object
+        // Optimización: Obtener todos los proveedores si son pocos, o paginar si son muchos.
+        // Por ahora, asumimos que la lista de proveedores para un <select> no es gigante.
+        let allProviders: Provider[] = []
+        let page = 1
+        let hasMore = true
+        while(hasMore) {
+          const data = await ProvidersService.getProviders(page)
+          allProviders = [...allProviders, ...data.results]
+          hasMore = data.next !== null
+          page++
+        }
+        setProviders(allProviders)
       } catch (err) {
         console.error("Error fetching providers:", err)
       }
@@ -100,7 +110,7 @@ export default function WarrantiesPage() {
         title: formData.title,
         terms: formData.terms,
         duration_days: Number.parseInt(formData.duration_days),
-        provider: { id: Number.parseInt(formData.provider_id) } as any,
+        provider: { id: Number.parseInt(formData.provider_id) } as any, // Ajustado para enviar solo el ID
       })
       toast({ description: "Garantía actualizada exitosamente" })
       setFormData({ title: "", terms: "", duration_days: "", provider_id: "" })
@@ -135,7 +145,8 @@ export default function WarrantiesPage() {
         </div>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-slate-900 hover:bg-slate-800 text-white">Crear Garantía</Button>
+            {/* --- BOTÓN MODIFICADO --- */}
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white">Crear Garantía</Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
@@ -188,7 +199,8 @@ export default function WarrantiesPage() {
                   ))}
                 </select>
               </div>
-              <Button type="submit" disabled={isSubmitting} className="w-full bg-slate-900 hover:bg-slate-800">
+              {/* --- BOTÓN MODIFICADO --- */}
+              <Button type="submit" disabled={isSubmitting} className="w-full bg-blue-600 hover:bg-blue-700">
                 {isSubmitting ? "Creando..." : "Crear"}
               </Button>
             </form>
@@ -216,15 +228,14 @@ export default function WarrantiesPage() {
         <>
           <Card>
             <div className="overflow-x-auto">
+              {/* --- TABLA REORGANIZADA --- */}
               <table className="w-full">
                 <thead>
                   <tr className="border-b bg-slate-50">
                     <th className="px-6 py-3 text-left text-sm font-semibold">Título</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold">Términos</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold">Duración</th>
                     <th className="px-6 py-3 text-left text-sm font-semibold">Proveedor</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold">Email</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold">Teléfono</th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold">Duración</th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold">Términos</th>
                     <th className="px-6 py-3 text-left text-sm font-semibold">Acciones</th>
                   </tr>
                 </thead>
@@ -232,24 +243,27 @@ export default function WarrantiesPage() {
                   {warranties.map((warranty) => (
                     <tr key={warranty.id} className="border-b hover:bg-slate-50">
                       <td className="px-6 py-3 font-medium">{warranty.title}</td>
-                      <td className="px-6 py-3 text-sm text-slate-600 max-w-xs truncate">{warranty.terms}</td>
-                      <td className="px-6 py-3">{warranty.duration_days} días</td>
                       <td className="px-6 py-3 text-sm font-medium">{warranty.provider.name}</td>
-                      <td className="px-6 py-3 text-sm text-slate-600">{warranty.provider.contact_email}</td>
-                      <td className="px-6 py-3 text-sm text-slate-600">{warranty.provider.contact_phone}</td>
+                      <td className="px-6 py-3">{warranty.duration_days} días</td>
+                      <td className="px-6 py-3 text-sm text-slate-600 max-w-xs truncate">{warranty.terms}</td>
+                      {/* --- ACCIONES MODIFICADAS --- */}
                       <td className="px-6 py-3">
-                        <div className="flex gap-2">
+                        <div className="flex gap-1">
                           <Button
-                            size="sm"
-                            variant="outline"
+                            size="icon-sm"
+                            variant="ghost"
                             onClick={() => handleEditClick(warranty)}
-                            className="gap-1"
+                            className="text-slate-600 hover:bg-slate-200 hover:text-slate-900"
                           >
                             <Edit2 className="w-4 h-4" />
-                            Editar
                           </Button>
-                          <Button variant="destructive" size="sm" onClick={() => handleDelete(warranty.id)}>
-                            Eliminar
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={() => handleDelete(warranty.id)}
+                            className="text-red-600 hover:bg-red-100 hover:text-red-700"
+                          >
+                            <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
                       </td>
@@ -341,7 +355,8 @@ export default function WarrantiesPage() {
               </select>
             </div>
             <div className="flex gap-2">
-              <Button type="submit" disabled={isSubmitting} className="flex-1 bg-slate-900 hover:bg-slate-800">
+              {/* --- BOTÓN MODIFICADO --- */}
+              <Button type="submit" disabled={isSubmitting} className="flex-1 bg-blue-600 hover:bg-blue-700">
                 {isSubmitting ? "Actualizando..." : "Actualizar"}
               </Button>
               <Button

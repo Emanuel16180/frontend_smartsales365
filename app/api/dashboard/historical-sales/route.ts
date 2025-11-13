@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Missing authorization header" }, { status: 401 })
     }
 
-    const response = await fetch("https://smartsales365-backend.onrender.com/api/v1/ai/dashboard/historical-sales/", {
+    const response = await fetch("https://backend-smartsales365.onrender.com/api/v1/ai/dashboard/historical-sales/", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

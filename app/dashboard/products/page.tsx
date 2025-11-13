@@ -14,7 +14,7 @@ import { useAllCategories } from "@/hooks/use-all-categories"
 import { useAllWarranties } from "@/hooks/use-all-warranties"
 import ProductsService from "@/lib/products-service"
 import Image from "next/image"
-import { ChevronLeft, ChevronRight, Edit2 } from "lucide-react"
+import { ChevronLeft, ChevronRight, Edit2, Trash2 } from "lucide-react" // <- Importar Trash2
 
 export default function ProductsPage() {
   const { products, isLoading, error, refetch, currentPage, hasNextPage, hasPreviousPage, goToPage, totalCount } =
@@ -127,7 +127,7 @@ export default function ProductsPage() {
         </div>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-slate-900 hover:bg-slate-800 text-white">Agregar Producto</Button>
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white">Agregar Producto</Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
@@ -231,7 +231,7 @@ export default function ProductsPage() {
                   className="w-full text-sm"
                 />
               </div>
-              <Button type="submit" disabled={isSubmitting} className="w-full bg-slate-900 hover:bg-slate-800">
+              <Button type="submit" disabled={isSubmitting} className="w-full bg-blue-600 hover:bg-blue-700">
                 {isSubmitting ? "Creando..." : "Crear Producto"}
               </Button>
             </form>
@@ -253,7 +253,7 @@ export default function ProductsPage() {
         <Card className="p-6">
           <div className="text-center py-12">
             <p className="text-slate-600 mb-4">No hay productos registrados</p>
-            <Button onClick={() => setIsOpen(true)} className="bg-slate-900 hover:bg-slate-800 text-white">
+            <Button onClick={() => setIsOpen(true)} className="bg-blue-600 hover:bg-blue-700 text-white">
               Crear Primer Producto
             </Button>
           </div>
@@ -265,8 +265,8 @@ export default function ProductsPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b bg-slate-50">
-                    <th className="px-6 py-3 text-left text-sm font-semibold">Imagen</th>
                     <th className="px-6 py-3 text-left text-sm font-semibold">Nombre</th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold">Imagen</th>
                     <th className="px-6 py-3 text-left text-sm font-semibold">Marca</th>
                     <th className="px-6 py-3 text-left text-sm font-semibold">Precio</th>
                     <th className="px-6 py-3 text-left text-sm font-semibold">Stock</th>
@@ -278,6 +278,7 @@ export default function ProductsPage() {
                 <tbody>
                   {products.map((product) => (
                     <tr key={product.id} className="border-b hover:bg-slate-50">
+                      <td className="px-6 py-3 font-medium">{product.name}</td>
                       <td className="px-6 py-3">
                         {product.image_url ? (
                           <div className="relative w-12 h-12">
@@ -294,10 +295,10 @@ export default function ProductsPage() {
                           </div>
                         )}
                       </td>
-                      <td className="px-6 py-3 font-medium">{product.name}</td>
                       <td className="px-6 py-3 text-sm">{product.brand?.name || "-"}</td>
                       <td className="px-6 py-3">
-                        BOB$
+                        {/* --- CORRECCIÓN AQUÍ --- */}
+                        BOB{" "}
                         {typeof product.price === "number"
                           ? product.price.toFixed(2)
                           : Number.parseFloat(String(product.price)).toFixed(2)}
@@ -314,18 +315,22 @@ export default function ProductsPage() {
                       <td className="px-6 py-3 text-sm text-slate-600">{product.category?.name || "-"}</td>
                       <td className="px-6 py-3 text-sm text-slate-600">{product.warranty?.title || "-"}</td>
                       <td className="px-6 py-3">
-                        <div className="flex gap-2">
+                        <div className="flex gap-1">
                           <Button
-                            size="sm"
-                            variant="outline"
+                            size="icon-sm"
+                            variant="ghost"
                             onClick={() => handleEditClick(product)}
-                            className="gap-1"
+                            className="text-slate-600 hover:bg-slate-200 hover:text-slate-900"
                           >
                             <Edit2 className="w-4 h-4" />
-                            Editar
                           </Button>
-                          <Button variant="destructive" size="sm" onClick={() => handleDelete(product.id)}>
-                            Eliminar
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={() => handleDelete(product.id)}
+                            className="text-red-600 hover:bg-red-100 hover:text-red-700"
+                          >
+                            <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
                       </td>
@@ -468,7 +473,7 @@ export default function ProductsPage() {
               />
             </div>
             <div className="flex gap-2">
-              <Button type="submit" disabled={isSubmitting} className="flex-1 bg-slate-900 hover:bg-slate-800">
+              <Button type="submit" disabled={isSubmitting} className="flex-1 bg-blue-600 hover:bg-blue-700">
                 {isSubmitting ? "Actualizando..." : "Actualizar Producto"}
               </Button>
               <Button

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { XAxis, YAxis, CartesianGrid, ResponsiveContainer, AreaChart, Area } from "recharts"
+import { XAxis, YAxis, CartesianGrid, ResponsiveContainer, BarChart, Bar } from "recharts"
 import { fetchDashboardData } from "./actions"
 
 interface SalesData {
@@ -71,25 +71,25 @@ export default function DashboardPage() {
       color: "from-blue-50 to-blue-100",
     },
     {
-      title: "Clientes",
-      description: "Gestionar clientes",
-      href: "/dashboard/customers",
-      icon: "👥",
-      color: "from-green-50 to-green-100",
-    },
-    {
       title: "Productos",
       description: "Gestionar productos",
       href: "/dashboard/products",
       icon: "📦",
       color: "from-purple-50 to-purple-100",
     },
+    {
+      title: "Reportes",
+      description: "Generar reportes",
+      href: "/dashboard/reports",
+      icon: "📄",
+      color: "from-indigo-50 to-indigo-100",
+    },
   ]
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">Panel de Control</h1>
+        <h1 className="text-3xl font-bold text-slate-900 mb-2">Dashboard</h1>
         <p className="text-slate-600">Resumen de ventas y predicciones</p>
       </div>
 
@@ -109,7 +109,6 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Charts Section */}
       {loading ? (
         <Card className="p-6">
           <p className="text-slate-600 text-center py-8">Cargando datos...</p>
@@ -119,65 +118,24 @@ export default function DashboardPage() {
           <p className="text-red-600 text-center py-8">{error}</p>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Historical Sales Chart */}
-          <Card className="p-6">
-            <div className="flex flex-col gap-1 mb-4">
-              <h2 className="text-lg font-semibold text-slate-900">Ventas Históricas</h2>
-              <p className="text-sm text-slate-500">En Bolivianos (Bs)</p>
-            </div>
-            {chartData.length > 0 ? (
-              <ChartContainer
-                config={{
-                  sales: {
-                    label: "Ventas (Bs)",
-                    color: "hsl(var(--chart-1))",
-                  },
-                }}
-                className="h-[300px]"
-              >
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={chartData}>
-                    <defs>
-                      <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <ChartTooltip
-                      content={<ChartTooltipContent />}
-                      formatter={(value) => `Bs ${value.toLocaleString("es-ES", { maximumFractionDigits: 0 })}`}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="sales"
-                      stroke="hsl(var(--chart-1))"
-                      fillOpacity={1}
-                      fill="url(#colorSales)"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </ChartContainer>
-            ) : (
-              <p className="text-slate-600 text-center py-8">No hay datos históricos disponibles</p>
-            )}
-          </Card>
+        // --- INICIO DE LAYOUT CORREGIDO ---
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          {/* Columna 1 (Vacía) */}
+          <div className="hidden md:block"></div>
 
-          {/* Future Prediction Chart */}
+          {/* Columna 2 (Predicción) - Queda debajo de "Productos" */}
           <Card className="p-6">
             <div className="flex flex-col gap-1 mb-4">
               <h2 className="text-lg font-semibold text-slate-900">Predicción Siguiente Mes</h2>
-              <p className="text-sm text-slate-500">Modelo: Random Forest • En Bolivianos (Bs)</p>
+              <p className="text-sm text-slate-500">Modelo: Random Forest</p>
             </div>
             {predictionData ? (
               <div className="space-y-4">
                 <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-6">
-                  <p className="text-slate-600 text-sm mb-2">Venta Predicha</p>
+                  <p className="text-slate-600 text-sm mb-2">Venta Predicha (Bs)</p>
                   <p className="text-4xl font-bold text-indigo-600 mb-2">
-                    Bs {predictionData.predicted_sales_bob.toLocaleString("es-ES", { maximumFractionDigits: 0 })}
+                    {predictionData.predicted_sales_bob.toLocaleString("es-ES", { maximumFractionDigits: 0 })}
                   </p>
                   <p className="text-slate-600 text-sm">
                     Período: <span className="font-semibold">{predictionData.prediction_period}</span>
@@ -188,7 +146,49 @@ export default function DashboardPage() {
               <p className="text-slate-600 text-center py-8">No hay predicción disponible</p>
             )}
           </Card>
+
+          {/* Columna 3 (Vacía) */}
+          <div className="hidden md:block"></div>
+
+          {/* Gráfico de Ventas Históricas (Abajo, ocupando todo el ancho) */}
+          <Card className="p-6 md:col-span-3">
+            <div className="flex flex-col gap-1 mb-4">
+              <h2 className="text-lg font-semibold text-slate-900">Ventas Históricas</h2>
+              <p className="text-sm text-slate-500">En Bolivianos (Bs)</p>
+            </div>
+            {chartData.length > 0 ? (
+              <ChartContainer
+                config={{
+                  sales: {
+                    label: "Ventas (Bs)",
+                    color: "hsl(220, 70%, 60%)", // Color azul
+                  },
+                }}
+                className="h-[300px]"
+              >
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <ChartTooltip
+                      content={<ChartTooltipContent />}
+                      formatter={(value) => `Bs ${value.toLocaleString("es-ES", { maximumFractionDigits: 0 })}`}
+                    />
+                    <Bar 
+                      dataKey="sales" 
+                      fill="var(--color-sales)"
+                      radius={[4, 4, 0, 0]} 
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            ) : (
+              <p className="text-slate-600 text-center py-8">No hay datos históricos disponibles</p>
+            )}
+          </Card>
         </div>
+        // --- FIN DE LAYOUT CORREGIDO ---
       )}
     </div>
   )

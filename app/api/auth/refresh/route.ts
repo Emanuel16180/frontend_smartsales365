@@ -4,7 +4,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
-    const backendResponse = await fetch("https://smartsales365-backend.onrender.com/api/v1/users/login/refresh/", {
+    const backendResponse = await fetch("https://backend-smartsales365.onrender.com/api/v1/users/login/refresh/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

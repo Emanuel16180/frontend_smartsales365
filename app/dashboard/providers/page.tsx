@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast"
 import { useProviders } from "@/hooks/use-providers"
 import ProvidersService, { type Provider } from "@/lib/providers-service"
-import { ChevronLeft, ChevronRight, Edit2 } from "lucide-react"
+import { ChevronLeft, ChevronRight, Edit2, Trash2 } from "lucide-react" // <- Importar Trash2
 
 export default function ProvidersPage() {
   const { providers, isLoading, error, refetch, currentPage, hasNextPage, hasPreviousPage, goToPage, totalCount } =
@@ -110,7 +110,8 @@ export default function ProvidersPage() {
         </div>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-slate-900 hover:bg-slate-800 text-white">Crear Proveedor</Button>
+            {/* --- BOTÓN MODIFICADO --- */}
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white">Crear Proveedor</Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
@@ -145,7 +146,8 @@ export default function ProvidersPage() {
                   required
                 />
               </div>
-              <Button type="submit" disabled={isSubmitting} className="w-full bg-slate-900 hover:bg-slate-800">
+              {/* --- BOTÓN MODIFICADO --- */}
+              <Button type="submit" disabled={isSubmitting} className="w-full bg-blue-600 hover:bg-blue-700">
                 {isSubmitting ? "Creando..." : "Crear"}
               </Button>
             </form>
@@ -188,19 +190,24 @@ export default function ProvidersPage() {
                       <td className="px-6 py-3 font-medium">{provider.name}</td>
                       <td className="px-6 py-3 text-sm text-slate-600">{provider.contact_email}</td>
                       <td className="px-6 py-3 text-sm text-slate-600">{provider.contact_phone}</td>
+                      {/* --- ACCIONES MODIFICADAS --- */}
                       <td className="px-6 py-3">
-                        <div className="flex gap-2">
+                        <div className="flex gap-1">
                           <Button
-                            size="sm"
-                            variant="outline"
+                            size="icon-sm"
+                            variant="ghost"
                             onClick={() => handleEditClick(provider)}
-                            className="gap-1"
+                            className="text-slate-600 hover:bg-slate-200 hover:text-slate-900"
                           >
                             <Edit2 className="w-4 h-4" />
-                            Editar
                           </Button>
-                          <Button variant="destructive" size="sm" onClick={() => handleDelete(provider.id)}>
-                            Eliminar
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={() => handleDelete(provider.id)}
+                            className="text-red-600 hover:bg-red-100 hover:text-red-700"
+                          >
+                            <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
                       </td>
@@ -274,7 +281,8 @@ export default function ProvidersPage() {
               />
             </div>
             <div className="flex gap-2">
-              <Button type="submit" disabled={isSubmitting} className="flex-1 bg-slate-900 hover:bg-slate-800">
+              {/* --- BOTÓN MODIFICADO --- */}
+              <Button type="submit" disabled={isSubmitting} className="flex-1 bg-blue-600 hover:bg-blue-700">
                 {isSubmitting ? "Actualizando..." : "Actualizar"}
               </Button>
               <Button

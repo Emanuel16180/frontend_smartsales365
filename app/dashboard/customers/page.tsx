@@ -5,7 +5,9 @@
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useCustomers } from "@/hooks/use-customers" // Importar hook
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, User } from "lucide-react" // <- Importar User
+import { Avatar, AvatarFallback } from "@/components/ui/avatar" // <- Importar Avatar
+import { Badge } from "@/components/ui/badge" // <- Importar Badge
 
 export default function CustomersPage() {
   const {
@@ -59,17 +61,35 @@ export default function CustomersPage() {
                     <th className="px-6 py-3 text-left text-sm font-semibold">Nombre</th>
                     <th className="px-6 py-3 text-left text-sm font-semibold">Email</th>
                     <th className="px-6 py-3 text-left text-sm font-semibold">Rol</th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold">Estado</th>
                   </tr>
                 </thead>
                 <tbody>
                   {customers.map((customer) => (
                     <tr key={customer.id} className="border-b hover:bg-slate-50">
-                      <td className="px-6 py-3 font-medium">{customer.full_name}</td>
+                      {/* --- CELDA DE NOMBRE MODIFICADA --- */}
+                      <td className="px-6 py-3 font-medium">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="size-8">
+                            <AvatarFallback className="bg-slate-200 text-slate-600">
+                              <User className="size-4" />
+                            </AvatarFallback>
+                          </Avatar>
+                          {customer.full_name}
+                        </div>
+                      </td>
                       <td className="px-6 py-3 text-sm text-slate-600">{customer.email}</td>
+                      {/* --- CELDA DE ROL MODIFICADA --- */}
                       <td className="px-6 py-3 text-sm text-slate-600">
-                        <span className="px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-700">
+                        <Badge variant="outline" className="text-blue-700 border-blue-200 bg-blue-50 font-medium">
                           {customer.role}
-                        </span>
+                        </Badge>
+                      </td>
+                      {/* --- NUEVA CELDA DE ESTADO --- */}
+                      <td className="px-6 py-3 text-sm text-slate-600">
+                        <Badge variant="outline" className="text-green-700 border-green-200 bg-green-50 font-medium">
+                          Activo
+                        </Badge>
                       </td>
                     </tr>
                   ))}

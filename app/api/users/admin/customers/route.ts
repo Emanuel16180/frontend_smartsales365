@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ detail: "Authentication credentials were not provided." }, { status: 401 })
     }
 
-    const backendUrl = new URL("https://smartsales365-backend.onrender.com/api/v1/users/admin/customers/")
+    const backendUrl = new URL("https://backend-smartsales365.onrender.com/api/v1/users/admin/customers/")
     backendUrl.search = searchParams.toString()
 
     const backendResponse = await fetch(backendUrl.toString(), {
