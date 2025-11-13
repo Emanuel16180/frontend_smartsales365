@@ -9,8 +9,20 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "v0 App",
-  description: "Created with v0",
+  // --- CAMPOS ACTUALIZADOS ---
+  title: "SmartSales365 Admin",
+  description: "Panel de Administración para SmartSales365",
+  
+  // --- INICIO DE CAMBIOS PWA ---
+  manifest: "/manifest.json",
+  themeColor: "#3b82f6", // Color azul de la app
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "SmartSales365 Admin",
+  },
+  // --- FIN DE CAMBIOS PWA ---
+
   generator: "v0.app",
   icons: {
     icon: [

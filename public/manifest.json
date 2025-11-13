@@ -1,0 +1,21 @@
+{
+  "name": "SmartSales365 Admin Panel",
+  "short_name": "SmartSales365",
+  "description": "Panel de Administración para SmartSales365",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#3b82f6",
+  "icons": [
+    {
+      "src": "/icon-light-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
