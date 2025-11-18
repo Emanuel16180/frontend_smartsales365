@@ -1,28 +1,24 @@
 import type React from "react"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { AuthProvider } from "@/contexts/auth-context"
+import { ServiceWorkerRegister } from "../components/ServiceWorkerRegister"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  // --- CAMPOS ACTUALIZADOS ---
   title: "SmartSales365 Admin",
   description: "Panel de Administración para SmartSales365",
-  
-  // --- INICIO DE CAMBIOS PWA ---
   manifest: "/manifest.json",
-  themeColor: "#3b82f6", // Color azul de la app
+  // El themeColor se movió a 'viewport' abajo para evitar advertencias
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "SmartSales365 Admin",
   },
-  // --- FIN DE CAMBIOS PWA ---
-
   generator: "v0.app",
   icons: {
     icon: [
@@ -43,6 +39,11 @@ export const metadata: Metadata = {
   },
 }
 
+// Nueva configuración correcta para el color del tema
+export const viewport: Viewport = {
+  themeColor: "#3b82f6",
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -51,6 +52,8 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`font-sans antialiased`}>
+        {/* Esto fuerza el registro del Service Worker */}
+        <ServiceWorkerRegister />
         <AuthProvider>{children}</AuthProvider>
         <Analytics />
       </body>
