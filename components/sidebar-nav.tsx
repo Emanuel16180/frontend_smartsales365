@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { ChevronDown } from "lucide-react"
+import { TicketPercent } from "lucide-react" // <--- Ya lo tenías importado, perfecto.
 
 // --- ESTRUCTURA DE NAVEGACIÓN REORDENADA ---
 const navigationItems = [
@@ -14,17 +15,24 @@ const navigationItems = [
   // 2. Clientes
   { href: "/dashboard/customers", label: "Clientes", icon: "👥" },
   
-  // 3. Operaciones
+  // 3. Operaciones (MODIFICADO)
   {
     label: "Operaciones",
     icon: "📈",
     submenu: [
       { href: "/dashboard/sales", label: "Ventas", icon: "🛒" },
       { href: "/dashboard/reports", label: "Reportes", icon: "📄" },
+      // --- NUEVO ITEM: CUPONES ---
+      { 
+        href: "/dashboard/coupons", 
+        label: "Cupones", 
+        // Usamos el componente directamente, React lo renderizará bien dentro del span
+        icon: <TicketPercent size={18} /> 
+      },
     ],
   },
   
-  // 4. Catálogo (con submenú reordenado)
+  // 4. Catálogo
   {
     label: "Catálogo",
     icon: "📚",
@@ -40,7 +48,6 @@ const navigationItems = [
   // 5. Configuración
   { href: "/dashboard/settings", label: "Configuración", icon: "⚙️" },
 ]
-// --- FIN DE LA ACTUALIZACIÓN ---
 
 export function SidebarNav() {
   const pathname = usePathname()
@@ -54,7 +61,6 @@ export function SidebarNav() {
     const activeItem = navigationItems.find(item => 
       "submenu" in item && item.submenu && isSubmenuActive(item.submenu)
     )
-    // Si un hijo está activo, abre su padre. Si no, abre "Catálogo" por defecto.
     return activeItem ? activeItem.label : "Catálogo"
   }
 
@@ -83,10 +89,10 @@ export function SidebarNav() {
                     className={cn(
                       "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-sm",
                       hasActiveChild
-                        ? "bg-blue-50 text-blue-700 font-medium" // Estilo si un hijo está activo
+                        ? "bg-blue-50 text-blue-700 font-medium"
                         : isOpen
-                          ? "bg-slate-100 text-slate-900" // Estilo si está abierto pero sin hijo activo
-                          : "text-slate-600 hover:bg-slate-100" // Estilo por defecto
+                          ? "bg-slate-100 text-slate-900"
+                          : "text-slate-600 hover:bg-slate-100"
                     )}
                   >
                     <span className="text-lg">{item.icon}</span>
@@ -104,10 +110,11 @@ export function SidebarNav() {
                           className={cn(
                             "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm",
                             pathname === subitem.href
-                              ? "bg-blue-50 text-blue-700 font-medium" // Estilo activo para sub-item
-                              : "text-slate-500 hover:text-slate-900 hover:bg-slate-100" // Estilo por defecto para sub-item
+                              ? "bg-blue-50 text-blue-700 font-medium"
+                              : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
                           )}
                         >
+                          {/* Aquí se renderiza el icono (String o Componente React como TicketPercent) */}
                           <span>{subitem.icon}</span>
                           <span>{subitem.label}</span>
                         </Link>
@@ -125,8 +132,8 @@ export function SidebarNav() {
                 className={cn(
                   "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-sm",
                   pathname === item.href
-                    ? "bg-blue-50 text-blue-700 font-medium" // Estilo activo
-                    : "text-slate-600 hover:bg-slate-100" // Estilo por defecto
+                    ? "bg-blue-50 text-blue-700 font-medium"
+                    : "text-slate-600 hover:bg-slate-100"
                 )}
               >
                 <span className="text-lg">{item.icon}</span>
